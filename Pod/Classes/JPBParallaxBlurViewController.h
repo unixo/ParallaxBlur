@@ -11,6 +11,7 @@
 @protocol JPBParallaxBlurInteractionsDelegate;
 
 @interface JPBParallaxBlurViewController : UIViewController
+@property (assign, nonatomic, readonly) CGFloat imageHeight;
 
 - (void)setHeaderImage:(UIImage*)headerImage;
 - (void)addHeaderOverlayView:(UIView*)overlay;

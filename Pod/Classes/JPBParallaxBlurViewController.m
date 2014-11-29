@@ -21,6 +21,7 @@
     
     NSMutableArray *_headerOverlayViews;
 }
+@property (assign, nonatomic, readwrite) CGFloat imageHeight;
 @end
 
 @implementation JPBParallaxBlurViewController
@@ -30,7 +31,31 @@ static CGFloat BLUR_DISTANCE = 200.0f;
 static CGFloat HEADER_HEIGHT = 60.0f;
 static CGFloat IMAGE_HEIGHT = 320.0f;
 
--(void)viewDidLoad{
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setDefaults];
+    }
+    return self;
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [self setDefaults];
+    }
+    return self;
+}
+
+- (void)setDefaults
+{
+    self.imageHeight = IMAGE_HEIGHT;
+}
+
+-(void)viewDidLoad
+{
     [super viewDidLoad];
     
     _headerOverlayViews = [NSMutableArray array];
@@ -45,7 +70,7 @@ static CGFloat IMAGE_HEIGHT = 320.0f;
     _mainScrollView.autoresizesSubviews = YES;
     self.view = _mainScrollView;
     
-    _backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), IMAGE_HEIGHT)];
+    _backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), self.imageHeight)];
     _backgroundScrollView.scrollEnabled = NO;
     _backgroundScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     _backgroundScrollView.autoresizesSubviews = YES;
@@ -106,7 +131,7 @@ static CGFloat IMAGE_HEIGHT = 320.0f;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat delta = 0.0f;
-    CGRect rect = CGRectMake(0, 0, CGRectGetWidth(_scrollViewContainer.frame), IMAGE_HEIGHT);
+    CGRect rect = CGRectMake(0, 0, CGRectGetWidth(_scrollViewContainer.frame), self.imageHeight);
     
     CGFloat backgroundScrollViewLimit = _backgroundScrollView.frame.size.height - [self offsetHeight];
     
@@ -128,8 +153,8 @@ static CGFloat IMAGE_HEIGHT = 320.0f;
         // Here I check whether or not the user has scrolled passed the limit where I want to stick the header, if they have then I move the frame with the scroll view
         // to give it the sticky header look
         if (delta > backgroundScrollViewLimit) {
-            _backgroundScrollView.frame = (CGRect) {.origin = {0, delta - _backgroundScrollView.frame.size.height + [self offsetHeight]}, .size = {CGRectGetWidth(_scrollViewContainer.frame), IMAGE_HEIGHT}};
-            _floatingHeaderView.frame = (CGRect) {.origin = {0, delta - _floatingHeaderView.frame.size.height + [self offsetHeight]}, .size = {CGRectGetWidth(_scrollViewContainer.frame), IMAGE_HEIGHT}};
+            _backgroundScrollView.frame = (CGRect) {.origin = {0, delta - _backgroundScrollView.frame.size.height + [self offsetHeight]}, .size = {CGRectGetWidth(_scrollViewContainer.frame), self.imageHeight}};
+            _floatingHeaderView.frame = (CGRect) {.origin = {0, delta - _floatingHeaderView.frame.size.height + [self offsetHeight]}, .size = {CGRectGetWidth(_scrollViewContainer.frame), self.imageHeight}};
             _scrollViewContainer.frame = (CGRect){.origin = {0, CGRectGetMinY(_backgroundScrollView.frame) + CGRectGetHeight(_backgroundScrollView.frame)}, .size = _scrollViewContainer.frame.size };
             _contentView.contentOffset = CGPointMake (0, delta - backgroundScrollViewLimit);
             CGFloat contentOffsetY = -backgroundScrollViewLimit * 0.5f;
